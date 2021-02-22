@@ -1,2 +1,2 @@
 # My-SQL-projects
-In thos repository I store my SQL projects.
+In this repository I store my SQL projects.
