@@ -1,1 +1,11 @@
-/*Mini project. Business trips of employees*/ 
+/*Mini project. Business trips of employees.
+
+Select  appropriate queries and analyze the table with information
+about business trips of employees:
+
+Display information about business trips of those employees whose last
+name ends with the letter "a".
+
+
+
+*/
