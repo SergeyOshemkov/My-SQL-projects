@@ -12,7 +12,14 @@ Display information sorted alphabetically by city name. Name the calculated
 column Quantity.
 4. Find the two top cities by the number of business trips.
 Name the calculated column Quantity.
-5. Find the shortest business trip (business trips).
+5. Find business trips that start and end in the same month.
+Sort the result in alphabetical order:
+by city
+by employee's surname.
+6. Find the daily allowance amount for business trips, the first day of which
+fell on February or March 2020.
+Sort the the result first in alphabetical order by the names of the employees,
+and then in descending order of the daily allowance amount.
 
 
 */
@@ -93,7 +100,27 @@ trip in days, with the first and last day referring to the business trip period)
 Information should be displayed in descending order of trip duration, and then
 in descending order of city names (in reverse alphabetical order). */
 
-SELECT name, city, DATADIFF(end_date, start_date) + 1 AS duration
-FROM trip
-WHERE city NOT IN ("Москва","Санкт-Петербург")
+  SELECT name, city, DATADIFF(end_date, start_date) + 1 AS duration
+    FROM trip
+   WHERE city NOT IN ("Москва","Санкт-Петербург")
 ORDER BY 3 DESC, 2 DESC;
+
+/*Find business trips that start and end in the same month.
+Sort the result in alphabetical order:
+by city
+by employee's surname. */
+
+  SELECT name, city, start_date, end_date
+    FROM trip
+   WHERE MONTH(start_date) = MONTH(end_date)
+ORDER BY 2, 1 ASC;
+
+/*Find the daily allowance amount for business trips, the first day of which
+fell on February or March 2020.
+Sort the the result first in alphabetical order by the names of the employees,
+and then in descending order of the daily allowance amount.*/
+
+SELECT name, city, date_first, ((DATEDIFF(end_date, start_date) + 1) * per_day) AS Sum
+FROM trip
+WHERE MONTH(start_date) = 2 OR MONTH(start_date) = 3
+SORT BY 1 ASC, 4 DESC
