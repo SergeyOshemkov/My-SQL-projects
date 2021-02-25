@@ -20,7 +20,8 @@ by employee's surname.
 fell on February or March 2020.
 Sort the the result first in alphabetical order by the names of the employees,
 and then in descending order of the daily allowance amount.
-7. Query the name and the total amount of per diem received for all business
+7. Find the shortest business trip (trips).
+8. Query the name and the total amount of per diem received for all business
 trips for those employees who have been on business trips more than 3 times,
 in descending order of per diem amounts.*/
 
@@ -125,13 +126,20 @@ SELECT name, city, date_first, ((DATEDIFF(end_date, start_date) + 1) * per_day) 
   WHERE MONTH(start_date) = 2 OR MONTH(start_date) = 3
 SORT BY 1 ASC, 4 DESC;
 
+/*Find the shortest business trip (trips).*/
+
+SELECT name, city, start_date, end_date
+FROM trip
+WHERE DATEDIFF(end_date, start_date) =
+      (SELECT MIN(DATEDIFF(end_date, start_date))
+       FROM trip);
+
 /*Query the name and the total amount of per diem received for all business
 trips for those employees who have been on business trips more than 3 times,
  in descending order of per diem amounts.*/
 
-
-  SELECT name, SUM(per_diem * (DATEDIFF(date_last, date_first) + 1)) AS Сумма
+  SELECT name, SUM(per_day * (DATEDIFF(end_dat,start_date) + 1)) AS summ
     FROM trip
 GROUP BY name
   HAVING COUNT(*) > 3
-ORDER BY Сумма DESC;
+ORDER BY 2 DESC;
