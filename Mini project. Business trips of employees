@@ -1,7 +1,7 @@
 /*Mini project. Business trips of employees.
 
 Select  appropriate queries and analyze the table with information
-about business trips of employees:
+about business trips of employees.
 
 1. Display information about business trips of those employees whose last
 name ends with the letter "a".
@@ -21,7 +21,11 @@ fell on February or March 2020.
 Sort the the result first in alphabetical order by the names of the employees,
 and then in descending order of the daily allowance amount.
 7. Find the shortest business trip (trips).
-8. Query the name and the total amount of per diem received for all business
+8. Find the distribution of number of business trips by month.
+We consider that the business trip refers to a certain month if it began this
+month. Sort the data in a descending order, and then in alphabetical order by
+the name of the month. Name the columns Month and Count.
+9. Query the name and the total amount of per diem received for all business
 trips for those employees who have been on business trips more than 3 times,
 in descending order of per diem amounts.*/
 
@@ -131,6 +135,18 @@ SORT BY 1 ASC, 4 DESC;
 SELECT name, city, start_date, end_date
 FROM trip
 WHERE DATEDIFF(end_date, start_date) =
+      (SELECT MIN(DATEDIFF(end_date, start_date))
+       FROM trip);
+
+/*Find the distribution of number of business trips by month.
+
+We consider that the business trip refers to a certain month if it began this month.
+Sort the data in a descending order, and then in alphabetical order by the name
+of the month. Name the columns Month and Count.*/
+
+SELECT name, city, start_date, end_date
+  FROM trip
+ WHERE DATEDIFF(end_date, start_date) =
       (SELECT MIN(DATEDIFF(end_date, start_date))
        FROM trip);
 
