@@ -20,9 +20,9 @@ by employee's surname.
 fell on February or March 2020.
 Sort the the result first in alphabetical order by the names of the employees,
 and then in descending order of the daily allowance amount.
-
-
-*/
+7. Query the name and the total amount of per diem received for all business
+trips for those employees who have been on business trips more than 3 times,
+in descending order of per diem amounts.*/
 
 The table trip for this mini project:
 
@@ -121,6 +121,17 @@ Sort the the result first in alphabetical order by the names of the employees,
 and then in descending order of the daily allowance amount.*/
 
 SELECT name, city, date_first, ((DATEDIFF(end_date, start_date) + 1) * per_day) AS Sum
-FROM trip
-WHERE MONTH(start_date) = 2 OR MONTH(start_date) = 3
-SORT BY 1 ASC, 4 DESC
+   FROM trip
+  WHERE MONTH(start_date) = 2 OR MONTH(start_date) = 3
+SORT BY 1 ASC, 4 DESC;
+
+/*Query the name and the total amount of per diem received for all business
+trips for those employees who have been on business trips more than 3 times,
+ in descending order of per diem amounts.*/
+
+
+  SELECT name, SUM(per_diem * (DATEDIFF(date_last, date_first) + 1)) AS Сумма
+    FROM trip
+GROUP BY name
+  HAVING COUNT(*) > 3
+ORDER BY Сумма DESC;
