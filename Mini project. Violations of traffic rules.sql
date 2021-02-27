@@ -3,7 +3,9 @@
 1. Create and fill in 2 tables with information about fines.
 2. Substitute the "none " values in the column sum_fine of the table fine with
 the actual values taken from the table traffic_violation.
-3.   */
+3. Remove from the fine table information about violations committed before
+February 1, 2020.
+*/
 
 /* Create a table with information about fines. */
 
@@ -59,3 +61,9 @@ set
   f.sum_fine = tv.sum_fine
 where
   f.violation = tv.violation and f.sum_fine is null;
+
+/* Remove from the fine table information about violations committed before
+February 1, 2020. */
+
+DELETE FROM fine
+WHERE DATEDIFF("2020-02-01", date_violation) > 0;
