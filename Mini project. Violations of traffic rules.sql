@@ -8,6 +8,7 @@ February 1, 2020.
 4. Create a new table back_payment and fill it in with the information about
 unpaid fines (surname and initials of the driver, car number, violation, amount
 of the fine and date of violation) from the fine table.
+5.
 */
 
 /* Create a table with information about fines. */
@@ -74,7 +75,6 @@ WHERE DATEDIFF("2020-02-01", date_violation) > 0;
 /* Create a new table back_payment and fill it in with the information about
 unpaid fines (surname and initials of the driver, car number, violation, amount
 of the fine and date of violation) from the fine table. */
-
 
 create table
     back_payment
