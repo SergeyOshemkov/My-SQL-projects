@@ -1,19 +1,9 @@
 /*In this project I create the table and analize the violations of traffic rules.
 
-1. Create and fill in a table with information about fines.
-2. Enter the amount of the fine for each new traffic violation.
-3.
-
-*/
-
-
-
-
-
-если водитель на определенной машине совершил повторное нарушение, то сумму его штрафа за данное нарушение нужно увеличить в два раза (часть 1, часть 2) ;
-если водитель оплатил свой штраф в течение 20 дней со дня нарушения, то значение его штрафа уменьшить в два раза;
-создать новую таблицу,  в которую включить информацию о всех неоплаченных штрафах;
-удалить  информацию о нарушениях, совершенных раньше некоторой даты.
+1. Create and fill in 2 tables with information about fines.
+2. Substitute the "none " values in the column sum_fine of the table fine with
+the actual values taken from the table traffic_violation.
+3.   */
 
 /* Create a table with information about fines. */
 
@@ -41,3 +31,31 @@ VALUES
        ("Баранов П.Е.", "Р523ВТ", "Превышение скорости(от 40 до 60)",null, "2020-02-14", null),
        ("Абрамова К.А.", "О111АВ", "Проезд на запрещающий сигнал", null, "2020-02-23", null),
        ("Яковлев Г.Р.", "Т330ТТ", "Проезд на запрещающий сигнал", null, "2020-03-03", null);
+
+/* Create the table traffic violation. */
+
+CREATE TABLE traffic_violation
+ (
+    violation_id INT PRIMARY KEY AUTO_INCREMENT,
+    violation VARCHAR(30),
+    sum_fine DECIMAL(8,2),
+
+ );
+
+ INSERT INTO traffic_violation(violation_id, violation, sum_fine)
+
+ VALUES
+        (1, "Превышение скорости(от 20 до 40)", 500.00),
+        (2, "Превышение скорости(от 40 до 60)", 1000.00),
+        (3, "Проезд на запрещающий сигнал", 1000.00);
+
+/* Substitute the "none " values in the column sum_fine of the table fine with
+the actual values taken from the table traffic_violation. */
+
+update
+  fine as f,
+  traffic_violation as tv
+set
+  f.sum_fine = tv.sum_fine
+where
+  f.violation = tv.violation and f.sum_fine is null;
