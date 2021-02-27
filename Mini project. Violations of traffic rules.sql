@@ -5,6 +5,9 @@
 the actual values taken from the table traffic_violation.
 3. Remove from the fine table information about violations committed before
 February 1, 2020.
+4. Create a new table back_payment and fill it in with the information about
+unpaid fines (surname and initials of the driver, car number, violation, amount
+of the fine and date of violation) from the fine table.
 */
 
 /* Create a table with information about fines. */
@@ -67,3 +70,23 @@ February 1, 2020. */
 
 DELETE FROM fine
 WHERE DATEDIFF("2020-02-01", date_violation) > 0;
+
+/* Create a new table back_payment and fill it in with the information about
+unpaid fines (surname and initials of the driver, car number, violation, amount
+of the fine and date of violation) from the fine table. */
+
+
+create table
+    back_payment
+select
+    name,
+    number_plate,
+    violation,
+    sum_fine,
+    date_violation
+from
+    fine
+where
+    date_payment is null;
+
+select * from back_payment;
