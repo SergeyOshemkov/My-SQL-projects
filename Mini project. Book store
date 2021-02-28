@@ -11,7 +11,13 @@ currently not in stock - specify Null instead of the book title.
 6. Select novels (selected columns are genre, book, author) sorted by title.
 7. Find the amount of books of each author in stock.
 Select  authors with the amount of books < 10. Sort the amount
-of books in ascending order. */
+of books in ascending order.
+8. Select the surname, car number and violation for the  drivers who have
+violated the same rule two or more times on the same car.
+At the same time, take into account all violations, regardless of whether they
+are paid for or not.
+Sort the information alphabetically,  by the driver's last name.
+*/
 
 
 /* Create and fill in the table author */
@@ -146,19 +152,40 @@ ORDER BY
   title ASC;
 
 /* Count the amount of books of each author in stock.
-Select  authors with the amount of books < 10. Sort the amount 
+Select  authors with the amount of books < 10. Sort the amount
 of books in ascending order. */
 
-  SELECT
-    name_author,
-    SUM(book.amount) AS Количество
-  FROM
-    author
-    LEFT JOIN book on author.author_id = book.author_id
-  GROUP BY
-    name_author
-  HAVING
-    Количество < 10
-    or COUNT(title) = 0
-  ORDER BY
-    2;
+SELECT
+  name_author,
+SUM(book.amount) AS Количество
+FROM
+  author
+LEFT JOIN book on author.author_id = book.author_id
+GROUP BY
+  name_author
+HAVING
+  Количество < 10
+  or COUNT(title) = 0
+ORDER BY
+  2;
+
+/* Select the surname, car number and violation for the  drivers who have
+violated the same rule two or more times on the same car.
+At the same time, take into account all violations, regardless of whether they
+are paid for or not.
+Sort the information alphabetically,  by the driver's last name. */
+
+SELECT
+  name,
+  number_plate,
+  violation
+
+FROM fine
+
+GROUP BY
+  name,
+  number_plate,
+  violation
+
+HAVING COUNT(violation) >= 2
+ORDER BY 1 ASC
