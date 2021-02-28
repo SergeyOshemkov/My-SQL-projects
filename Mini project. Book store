@@ -17,6 +17,11 @@ violated the same rule two or more times on the same car.
 At the same time, take into account all violations, regardless of whether they
 are paid for or not.
 Sort the information alphabetically,  by the driver's last name.
+9. In the fine table, double the amount of unpaid fines for the drivers selected
+in the previous step.
+At the same time, consider that the amount should be increased only for unpaid
+fines.
+
 */
 
 
@@ -95,7 +100,7 @@ FROM
 ON author.author_id = book.author_id;
 
 /* Select the title, genre and price of the books, which amount is more than 8.
-          Sort the result in descending order of price. */
+   Sort the result in descending order of price. */
 
 SELECT
   title,
@@ -188,4 +193,35 @@ GROUP BY
   violation
 
 HAVING COUNT(violation) >= 2
+ORDER BY 1 ASC;
+
+
+/* In the fine table, double the amount of unpaid fines for the drivers selected
+in the previous step.
+At the same time, consider that the amount should be increased only for unpaid
+fines.  */
+
+UPDATE fine,
+    (
+     SELECT
+  name,
+  number_plate,
+  violation
+
+FROM
+  fine
+GROUP BY
+  name,
+  number_plate,
+  violation
+
+HAVING COUNT(violation) >= 2
 ORDER BY 1 ASC
+    ) query_in
+
+SET
+    sum_fine = 2 * sum_fine
+WHERE
+    date_payment IS NULL
+AND
+    fine.name = query_in.name;
