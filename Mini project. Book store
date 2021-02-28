@@ -8,6 +8,10 @@ sum_fine column.
 4. Find the title of all books. If the books of the specific author are
 currently not in stock - specify Null instead of the book title.
 5. Find all genres of books that are not represented in stock.
+6. Select novels (selected columns are genre, book, author) sorted by title.
+7. Find the amount of books of each author in stock.
+Select  authors with the amount of books < 10. Sort the amount
+of books in ascending order. */
 
 
 /* Create and fill in the table author */
@@ -121,3 +125,40 @@ LEFT JOIN
 ON genre.genre_id = book.genre_id
 WHERE
   amount IS NULL;
+
+/* Select novels (selected columns are genre, book, author) sorted by title. */
+
+SELECT
+  name_genre,
+  title,
+  name_author
+
+FROM
+  genre INNER jOIN book
+  ON genre.genre_id = book.genre_id
+    INNER JOIN author
+      ON book.author_id = author.author_id
+WHERE
+  name_genre
+LIKE "%Роман%"
+
+ORDER BY
+  title ASC;
+
+/* Count the amount of books of each author in stock.
+Select  authors with the amount of books < 10. Sort the amount 
+of books in ascending order. */
+
+  SELECT
+    name_author,
+    SUM(book.amount) AS Количество
+  FROM
+    author
+    LEFT JOIN book on author.author_id = book.author_id
+  GROUP BY
+    name_author
+  HAVING
+    Количество < 10
+    or COUNT(title) = 0
+  ORDER BY
+    2;
