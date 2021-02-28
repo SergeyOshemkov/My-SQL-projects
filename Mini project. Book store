@@ -76,3 +76,48 @@ VALUES
       (6,	"Стихотворения и поэмы", 3,	2, 650.00, 15),
       (7,	"Черный человек",	3, 2,	570.20,	6),
       (8,	"Лирика",	4, 2,	518.99,	2);
+
+/* Display titles of books and their authors. */
+
+SELECT title, name_author
+FROM
+  author INNER JOIN book
+ON author.author_id = book.author_id;
+
+/* Select the title, genre and price of the books, which amount is more than 8.
+          Sort the result in descending order of price. */
+
+SELECT
+  title,
+  name_genre,
+  price
+FROM
+  book
+INNER JOIN
+  genre
+ON book.genre_id = genre.genre_id
+AND book.amount > 8
+ORDER BY 3 DESC;
+
+/* Select the title of all books. If the books of the specific author are
+currently not in stock - specify Null instead of the book title. */
+
+SELECT name_author, title
+FROM
+  author
+LEFT JOIN
+  book
+ON author.author_id = book.author_id
+ORDER BY name_author;
+
+/* Find all genres of books that are not represented in stock. */
+
+SELECT
+  name_genre
+FROM
+  genre
+LEFT JOIN
+  book
+ON genre.genre_id = book.genre_id
+WHERE
+  amount IS NULL;
