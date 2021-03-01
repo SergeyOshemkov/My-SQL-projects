@@ -8,8 +8,21 @@ February 1, 2020.
 4. Create a new table back_payment and fill it in with the information about
 unpaid fines (surname and initials of the driver, car number, violation, amount
 of the fine and date of violation) from the fine table.
-5.
-*/
+5. Select the surname, car number and violation for the  drivers who have
+violated the same rule two or more times on the same car.
+At the same time, take into account all violations, regardless of whether they
+are paid for or not.
+Sort the information alphabetically,  by the driver's last name.
+6. In the fine table, double the amount of unpaid fines for the drivers selected
+in the previous step.
+At the same time, consider that the amount should be increased only for unpaid
+fines.
+7. Fill in the date of payment of the corresponding fine from the payment table 
+in the fine table.
+Reduce the accrued fine in the fine table by half (only for the new fines from
+the payment table), if the payment was made not later than 20 days from the
+date of violation.*/
+
 
 /* Create a table with information about fines. */
 
@@ -97,8 +110,63 @@ where
 
 select * from back_payment;
 
+/* Select the surname, car number and violation for the  drivers who have
+violated the same rule two or more times on the same car.
+At the same time, take into account all violations, regardless of whether they
+are paid for or not.
+Sort the information alphabetically,  by the driver's last name. */
 
-/* */
+SELECT
+  name,
+  number_plate,
+  violation
+
+FROM fine
+
+GROUP BY
+  name,
+  number_plate,
+  violation
+
+HAVING COUNT(violation) >= 2
+ORDER BY 1 ASC;
+
+
+/* In the fine table, double the amount of unpaid fines for the drivers selected
+in the previous step.
+At the same time, consider that the amount should be increased only for unpaid
+fines.  */
+
+UPDATE fine,
+    (
+     SELECT
+  name,
+  number_plate,
+  violation
+
+FROM
+  fine
+GROUP BY
+  name,
+  number_plate,
+  violation
+
+HAVING COUNT(violation) >= 2
+ORDER BY 1 ASC
+    ) query_in
+
+SET
+    sum_fine = 2 * sum_fine
+WHERE
+    date_payment IS NULL
+AND
+    fine.name = query_in.name;
+
+/* Fill in the date of payment of the corresponding fine from the payment table
+in the fine table.
+Reduce the accrued fine in the fine table by half (only for the new fines from
+the payment table), if the payment was made not later than 20 days from the
+date of violation.*/
 
 
 UPDATE
