@@ -12,8 +12,7 @@ currently not in stock - specify Null instead of the book title.
 7. Find the amount of books of each author in stock.
 Select  authors with the amount of books < 10. Sort the amount
 of books in ascending order.
-
-10. Compare the prices of books already in stock and in supply table.
+8. Compare the prices of books already in stock and in supply table.
 In case the price in the supply table is different from the price in stock
 recalculate the price in stock using the formula:
 
@@ -23,6 +22,10 @@ where p1 and a1 stand for price and amount in the stock (book table) and
       p2 and a2 stand for price and amount in the supply table.
 Increase the quantity of the books in stock by the number of books in the supply
 table.  Reset the number of these books in supply table.
+9.  Find identical books in the supply and book tables that have the same price,
+display their title and author and count the total number of copies of books
+in the supply and book tables.
+Name the columns Title, Author and Quantity.
 */
 
 
@@ -186,7 +189,6 @@ where p1 and a1 stand for price and amount in the stock (book table) and
 Increase the quantity of the books in stock by the number of books in the supply
 table.  Reset the number of these books in supply table. */
 
-
 UPDATE book
     INNER JOIN author ON author.author_id = book.author_id
     INNER JOIN supply ON book.title = supply.title
@@ -198,3 +200,23 @@ WHERE
     book.title = supply.title
 AND
     book.price != supply.price;
+
+/*  Find identical books in the supply and book tables that have the same price,
+display their title and author and count the total number of copies of books
+in the supply and book tables.
+Name the columns Title, Author and Quantity. */
+
+SELECT
+    book.title AS Название,
+    author AS Автор,
+    book.amount + supply.amount AS Количество
+FROM
+    book
+    INNER JOIN author USING(author_id)
+    INNER JOIN supply ON book.title = supply.title
+
+WHERE
+    supply.price = book.price;
+
+
+    
