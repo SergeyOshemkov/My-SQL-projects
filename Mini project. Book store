@@ -1,17 +1,24 @@
 /* Mini project. Book store.
 
 1. Create and fill in 3 tables: books, genre and author.
+
 2. Fill in the table with the fines that have to pay the driver according to
 the data from the traffic violation table. Fill in only the empty fields of the
 sum_fine column.
+
 3. Display titles of books and their authors.
+
 4. Find the title of all books. If the books of the specific author are
 currently not in stock - specify Null instead of the book title.
+
 5. Find all genres of books that are not represented in stock.
+
 6. Select novels (selected columns are genre, book, author) sorted by title.
+
 7. Find the amount of books of each author in stock.
 Select  authors with the amount of books < 10. Sort the amount
 of books in ascending order.
+
 8. Compare the prices of books already in stock and in supply table.
 In case the price in the supply table is different from the price in stock
 recalculate the price in stock using the formula:
@@ -22,10 +29,19 @@ where p1 and a1 stand for price and amount in the stock (book table) and
       p2 and a2 stand for price and amount in the supply table.
 Increase the quantity of the books in stock by the number of books in the supply
 table.  Reset the number of these books in supply table.
+
 9.  Find identical books in the supply and book tables that have the same price,
 display their title and author and count the total number of copies of books
 in the supply and book tables.
 Name the columns Title, Author and Quantity.
+
+10. The list of cities is stored in the city table.
+It is necessary to plan an exhibition of each author's books in each city during
+2020. Choose the date of the exhibition at random. Create a query that will
+display the city, author and date of the exhibition.
+The last column is Date.
+Sort the query  by city in alphabetical order, and Date in descending order.
+
 */
 
 
@@ -218,5 +234,20 @@ FROM
 WHERE
     supply.price = book.price;
 
+/* The list of cities is stored in the city table.
+It is necessary to plan an exhibition of each author's books in each city during
+2020. Choose the date of the exhibition at random. Create a query that will
+display the city, author and date of the exhibition.
+The last column is Date.
+Sort the query  by city in alphabetical order, and Date in descending order.  */
 
-    
+SELECT
+  name_city,
+  name_author,
+  DATE_ADD("2020-01-01", INTERVAL FLOOR(RAND() * 365) DAY) AS Дата
+FROM
+  city,
+  author
+ORDER BY
+  1 ASC,
+  3 DESC;
