@@ -26,7 +26,13 @@ CREATE TABLE fine
 
 /* Fill in a table. */
 
-INSERT INTO fine(name, number_plate, violation, sum_fine, date_violation, date_payment)
+INSERT INTO fine(
+            name,
+            number_plate,
+            violation,
+            sum_fine,
+            date_violation,
+            date_payment)
 
 VALUES
        ("Баранов П.Е.", "Р523ВТ", "Превышение скорости(от 40 до 60)",500.00, "2020-02-14", "2020-01-17"),
@@ -90,3 +96,31 @@ where
     date_payment is null;
 
 select * from back_payment;
+
+
+/* */
+
+
+UPDATE
+    fine,
+    payment
+SET
+    fine.date_payment = payment.date_payment
+WHERE
+    fine.name = payment.name
+AND
+    fine.date_violation = payment.date_violation;
+
+UPDATE
+    fine,
+    payment
+SET
+    fine.sum_fine = fine.sum_fine / 2
+WHERE
+    DATEDIFF(payment.date_payment, payment.date_violation) <= 20
+AND
+    fine.name = payment.name
+AND
+    fine.date_payment = payment.date_payment
+AND
+ fine.date_violation = payment.date_violation;
