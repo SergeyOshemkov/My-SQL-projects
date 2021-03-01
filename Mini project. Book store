@@ -12,16 +12,17 @@ currently not in stock - specify Null instead of the book title.
 7. Find the amount of books of each author in stock.
 Select  authors with the amount of books < 10. Sort the amount
 of books in ascending order.
-8. Select the surname, car number and violation for the  drivers who have
-violated the same rule two or more times on the same car.
-At the same time, take into account all violations, regardless of whether they
-are paid for or not.
-Sort the information alphabetically,  by the driver's last name.
-9. In the fine table, double the amount of unpaid fines for the drivers selected
-in the previous step.
-At the same time, consider that the amount should be increased only for unpaid
-fines.
 
+10. Compare the prices of books already in stock and in supply table.
+In case the price in the supply table is different from the price in stock
+recalculate the price in stock using the formula:
+
+(p1 * a1 + p2 * a2) / (a1 + a2),
+
+where p1 and a1 stand for price and amount in the stock (book table) and
+      p2 and a2 stand for price and amount in the supply table.
+Increase the quantity of the books in stock by the number of books in the supply
+table.  Reset the number of these books in supply table.
 */
 
 
@@ -174,54 +175,26 @@ HAVING
 ORDER BY
   2;
 
-/* Select the surname, car number and violation for the  drivers who have
-violated the same rule two or more times on the same car.
-At the same time, take into account all violations, regardless of whether they
-are paid for or not.
-Sort the information alphabetically,  by the driver's last name. */
+/* Compare the prices of books already in stock and in supply table.
+In case the price in the supply table is different from the price in stock
+recalculate the price in stock using the formula:
 
-SELECT
-  name,
-  number_plate,
-  violation
+(p1 * a1 + p2 * a2) / (a1 + a2),
 
-FROM fine
-
-GROUP BY
-  name,
-  number_plate,
-  violation
-
-HAVING COUNT(violation) >= 2
-ORDER BY 1 ASC;
+where p1 and a1 stand for price and amount in the stock (book table) and
+      p2 and a2 stand for price and amount in the supply table.
+Increase the quantity of the books in stock by the number of books in the supply
+table.  Reset the number of these books in supply table. */
 
 
-/* In the fine table, double the amount of unpaid fines for the drivers selected
-in the previous step.
-At the same time, consider that the amount should be increased only for unpaid
-fines.  */
-
-UPDATE fine,
-    (
-     SELECT
-  name,
-  number_plate,
-  violation
-
-FROM
-  fine
-GROUP BY
-  name,
-  number_plate,
-  violation
-
-HAVING COUNT(violation) >= 2
-ORDER BY 1 ASC
-    ) query_in
-
+UPDATE book
+    INNER JOIN author ON author.author_id = book.author_id
+    INNER JOIN supply ON book.title = supply.title
+                        and supply.author = author.name_author
 SET
-    sum_fine = 2 * sum_fine
+    book.price = (book.price * book.amount + supply.price * supply.amount) / (book.amount + supply.amount),
+                  book.amount = book.amount + supply.amount, supply.amount = 0
 WHERE
-    date_payment IS NULL
+    book.title = supply.title
 AND
-    fine.name = query_in.name;
+    book.price != supply.price;
