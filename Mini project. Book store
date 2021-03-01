@@ -42,6 +42,8 @@ display the city, author and date of the exhibition.
 The last column is Date.
 Sort the query  by city in alphabetical order, and Date in descending order.
 
+11. List in alphabetical order all authors who write in only one genre.
+Especially for this task some rows in the table were changed.
 */
 
 
@@ -251,3 +253,21 @@ FROM
 ORDER BY
   1 ASC,
   3 DESC;
+
+
+
+/* List in alphabetical order all authors who write in only one genre.
+Especially for this task some rows in the table were changed. */
+
+SELECT
+    name_author
+FROM
+    (SELECT
+         name_author,
+         COUNT(DISTINCT name_genre)
+FROM book
+    INNER JOIN author USING(author_id)
+    INNER JOIN genre USING(genre_id)
+GROUP BY
+     name_author
+HAVING COUNT(DISTINCT name_genre) = 1) alias_table_name;
