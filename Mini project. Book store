@@ -44,6 +44,10 @@ Sort the query  by city in alphabetical order, and Date in descending order.
 
 11. List in alphabetical order all authors who write in only one genre.
 Especially for this task some rows in the table were changed.
+
+12. Select the book ( title, name author , name genre, price, amount) written
+in the most popular genres, sorted alphabetically by book title.
+
 */
 
 
@@ -254,8 +258,6 @@ ORDER BY
   1 ASC,
   3 DESC;
 
-
-
 /* List in alphabetical order all authors who write in only one genre.
 Especially for this task some rows in the table were changed. */
 
@@ -271,3 +273,28 @@ FROM book
 GROUP BY
      name_author
 HAVING COUNT(DISTINCT name_genre) = 1) alias_table_name;
+
+/* Select the book ( title, name author , name genre, price, amount) written
+in the most popular genres, sorted alphabetically by book title. */
+
+SELECT
+    title,
+    name_author,
+    name_genre,
+    price,
+    amount
+FROM book INNER JOIN author ON book.author_id = author.author_id
+          INNER JOIN genre USING(genre_id)
+WHERE
+    name_genre IN (SELECT name_genre
+FROM
+    (SELECT
+         name_genre,
+         SUM(amount)
+FROM
+    book INNER JOIN genre USING(genre_id)
+GROUP BY
+    genre_id
+LIMIT 2) alias)
+
+ORDER BY 1;
