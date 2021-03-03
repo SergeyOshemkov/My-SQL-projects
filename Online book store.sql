@@ -104,4 +104,19 @@ ORDER BY
   WHERE name_author = "Достоевский Ф.М.";
 
 
-  
+  /*   */
+
+  SELECT name_genre, SUM(buy_book.amount) as Количество
+FROM genre INNER JOIN book
+     on genre.genre_id = book.genre_id
+     INNER JOIN buy_book
+     ON book.book_id = buy_book.book_id
+GROUP BY name_genre
+HAVING SUM(buy_book.amount) =
+     (SELECT MAX(sum_amount) AS max_sum_amount
+      FROM (SELECT genre.genre_id, SUM(buy_book.amount) AS sum_amount
+            FROM buy_book INNER JOIN book
+            ON buy_book.book_id=book.book_id
+                          INNER JOIN genre
+                          ON book.genre_id = genre.genre_id
+            GROUP  BY genre.genre_id) query_in;
