@@ -120,3 +120,19 @@ HAVING SUM(buy_book.amount) =
                           INNER JOIN genre
                           ON book.genre_id = genre.genre_id
             GROUP  BY genre.genre_id) query_in;
+
+
+
+/* 1 задача из 2.5 все предыдущие из 2.4 */
+
+INSERT INTO
+    client(name_client, city_id, email)
+SELECT
+    'Попов Илья',
+     city_id,
+    'popov@test'
+FROM city
+WHERE
+    city_id = 1;
+
+    
