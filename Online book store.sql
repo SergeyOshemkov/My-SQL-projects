@@ -135,4 +135,75 @@ FROM city
 WHERE
     city_id = 1;
 
-    
+
+
+/* 2 задача из 2.5 все предыдущие из 2.4 */
+
+INSERT INTO
+    buy(buy_description, client_id)
+SELECT
+    "Связаться со мной по вопросу доставки", client_id
+FROM
+    client
+WHERE
+    name_client = "Попов Илья";
+
+
+/* 2.5 3  */
+
+
+INSERT INTO buy_book(buy_id,
+                     book_id,
+                     buy_book.amount)
+SELECT 5,
+       book_id,
+       2
+FROM buy_book
+        INNER JOIN book USING(book_id)
+        INNER JOIN author USING(author_id)
+WHERE
+    title = "Лирика";
+
+INSERT INTO buy_book(buy_id,
+                     book_id,
+                     buy_book.amount)
+SELECT 5,
+       book_id,
+       1
+FROM buy_book
+        INNER JOIN book USING(book_id)
+        INNER JOIN author USING(author_id)
+WHERE
+    title = "Белая гвардия";
+
+/* 7 задача из 2.5 все предыдущие из 2.4 */
+
+UPDATE book
+       INNER JOIN buy_book USING(book_id)
+SET
+    book.amount = book.amount - buy_book.amount
+WHERE
+    buy_id = 5;
+
+/* 5 задача из 2.5 все предыдущие из 2.4 */
+
+INSERT INTO
+    buy_step(buy_id, step_id)
+SELECT
+    buy_id, step_id
+FROM buy
+    CROSS JOIN step
+WHERE
+    buy_id = 5;
+
+/* 8 задача из 2.5 все предыдущие из 2.4 */
+
+
+UPDATE
+    buy_step
+SET
+    date_step_beg = "2020-04-12"
+WHERE
+    buy_id = 5
+    AND
+    step_id = 1;
