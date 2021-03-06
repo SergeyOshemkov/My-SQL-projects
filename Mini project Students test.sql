@@ -39,4 +39,22 @@ HAVING
     FROM attempt)
 ORDER BY 1;
 
+/* In case the student has made several attempts in the same discipline, then
+select the difference in days between the first and last attempts. Select
+information in ascending order of difference. Students who have made one attempt
+ at a discipline are not counted. */
+
+
+SELECT
+    name_student,
+    name_subject,
+    DATEDIFF(MAX(date_attempt), MIN(date_attempt)) AS Интервал
+FROM subject
+    INNER JOIN attempt USING(subject_id)
+    INNER JOIN student USING(student_id)
+GROUP BY
+    name_student, name_subject
+HAVING COUNT(date_attempt) > 1
+ORDER BY 3;
+
 /*   */
