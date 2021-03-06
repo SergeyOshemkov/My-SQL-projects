@@ -24,4 +24,19 @@ GROUP BY
     name_subject;
 
 
+/* Select the student (or various students) who has the highest attempts
+results. Sort information alphabetically by student surname.  */
+
+SELECT name_student,
+       result
+FROM attempt
+       INNER JOIN student USING(student_id)
+GROUP BY
+    name_student,
+    result
+HAVING
+    result = (SELECT MAX(result)
+    FROM attempt)
+ORDER BY 1;
+
 /*   */
