@@ -57,4 +57,21 @@ GROUP BY
 HAVING COUNT(date_attempt) > 1
 ORDER BY 3;
 
+/* Students can be tested in one or more disciplines. Display the discipline and
+the number of unique students who were tested in it.
+Sort the information in descending order by quantity, and then by the name of
+the discipline.
+Include the disciplines for which the students did not pass, in this case,
+indicate the number of students 0. */
+
+SELECT
+    name_subject,
+    COUNT(DISTINCT student_id) AS Количество
+FROM subject
+    LEFT JOIN attempt ON subject.subject_id = attempt.subject_id
+GROUP BY
+    name_subject
+ORDER BY
+    2 DESC, 1 ASC;
+
 /*   */
