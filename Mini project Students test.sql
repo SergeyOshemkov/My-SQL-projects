@@ -74,4 +74,17 @@ GROUP BY
 ORDER BY
     2 DESC, 1 ASC;
 
+/* Randomly select 3 questions on the discipline "Fundamentals of databases". */
+
+SELECT
+    question_id,
+    name_question
+FROM subject
+    INNER JOIN question ON subject.subject_id = question.subject_id
+WHERE
+    name_subject = "Основы баз данных"
+ORDER BY RAND()
+LIMIT 3;
+
+
 /*   */
