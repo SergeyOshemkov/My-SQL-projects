@@ -87,4 +87,19 @@ ORDER BY RAND()
 LIMIT 3;
 
 
+/* Select the questions that were included in the test for Ivan Semyonov in the
+"Basics of SQL" discipline 2020-05-17 (the attempt_id value for this attempt is
+ 7). Indicate which answer the student gave and whether he was correct or not.*/
+
+SELECT
+    name_question,
+    name_answer,
+    IF(is_correct, 'Верно', "Неверно") AS Результат
+FROM answer
+     INNER JOIN testing ON answer.answer_id = testing.answer_id
+     INNER JOIN question ON testing.question_id = question.question_id
+WHERE
+    attempt_id = 7;
+
+
 /*   */
