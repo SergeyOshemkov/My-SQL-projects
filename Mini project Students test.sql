@@ -1,3 +1,33 @@
+/* Description of the projectL
+
+Tasks to solve.
+
+1. Select students who passed the discipline "Basics of databases", indicate the
+ date of the attempt and the result. Display information in descending order of
+ test results.
+2.  Select the number of attempts made by students in each discipline, as well
+as the average result of attempts, which should be rounded to 2 decimal places.
+The result of an attempt stands for the percentage of correct answers to test
+questions, which is filled in to the result column.
+3. Select the student (or various students) who has the highest attempts
+results. Sort information alphabetically by student surname.
+4. In case the student has made several attempts in the same discipline, then
+select the difference in days between the first and last attempts. Select
+information in ascending order of difference. Students who have made one attempt
+ at a discipline are not counted.
+5. Students can be tested in one or more disciplines. Display the discipline and
+the number of unique students who were tested in it.
+Sort the information in descending order by quantity, and then by the name of
+the discipline.
+Include the disciplines for which the students did not pass, in this case,
+indicate the number of students 0.
+6. Randomly select 3 questions on the discipline Fundamentals of databases.
+7. Select the questions that were included in the test for Ivan Semyonov in the
+"Basics of SQL" discipline 2020-05-17 (the attempt_id value for this attempt is
+ 7). Indicate which answer the student gave and whether he was correct or not.
+
+ */
+
 /* Select students who passed the discipline "Basics of databases", indicate the
  date of the attempt and the result. Display information in descending order of
  test results. */
