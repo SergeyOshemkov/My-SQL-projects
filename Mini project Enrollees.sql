@@ -1,9 +1,17 @@
+/* Description of the project:
+
+Tasks to solve:
+
+1. In the table attempt to include a new attempt for the student Pavel Baranov
+in the discipline "The basics of DBs". Set the current date as the date of the
+attempt.
+
+*/
 
 
 /*  In the table attempt to include a new attempt for the student Pavel Baranov
 in the discipline "The basics of DBs". Set the current date as the date of the
 attempt. */
-
 
 INSERT INTO attempt(
                     student_id, 
