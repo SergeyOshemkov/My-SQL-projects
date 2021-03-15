@@ -1,4 +1,21 @@
-/* Description of the projectL
+/*
+The description of the project.
+
+The university implements online testing in several disciplines. Each discipline
+includes a number of questions. The answers to the question present in the form
+of answer options. And one of these options is correct.
+
+The student  registers in the system, indicating his name, surname and
+patronymic. After that, he can be tested in one or more disciplines.
+The student has several attempts to pass the test (it is necessary to keep the
+date of the attempt).
+
+Each student gets a randomly  selected  set of questions on the chosen discipline.
+The student answers the questions by choosing one of the suggested answer options.
+
+When the testing comes to an end, the result (in percent) of the attempt is
+calculated and saved.
+
 
 Tasks to solve.
 
@@ -24,9 +41,8 @@ indicate the number of students 0.
 6. Randomly select 3 questions on the discipline Fundamentals of databases.
 7. Select the questions that were included in the test for Ivan Semyonov in the
 "Basics of SQL" discipline 2020-05-17 (the attempt_id value for this attempt is
- 7). Indicate which answer the student gave and whether he was correct or not.
+ 7). Indicate which answer the student gave and whether he was correct or not. */
 
- */
 
 /* Select students who passed the discipline "Basics of databases", indicate the
  date of the attempt and the result. Display information in descending order of
@@ -130,6 +146,3 @@ FROM answer
      INNER JOIN question ON testing.question_id = question.question_id
 WHERE
     attempt_id = 7;
-
-
-/*   */
