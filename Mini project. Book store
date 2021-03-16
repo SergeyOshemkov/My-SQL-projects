@@ -1,25 +1,18 @@
 /* Mini project. Book store.
 
+Description of the project: in this project it is necessary to analyze the
+assortment of books in the warehouse.
+
 1. Create and fill in 3 tables: books, genre and author.
-
-2. Fill in the table with the fines that have to pay the driver according to
-the data from the traffic violation table. Fill in only the empty fields of the
-sum_fine column.
-
-3. Display titles of books and their authors.
-
-4. Find the title of all books. If the books of the specific author are
+2. Display titles of books and their authors.
+3. Find the title of all books. If the books of the specific author are
 currently not in stock - specify Null instead of the book title.
-
-5. Find all genres of books that are not represented in stock.
-
-6. Select novels (selected columns are genre, book, author) sorted by title.
-
-7. Find the amount of books of each author in stock.
+4. Find all genres of books that are not represented in stock.
+5. Select novels (selected columns are genre, book, author) sorted by title.
+6. Find the amount of books of each author in stock.
 Select  authors with the amount of books < 10. Sort the amount
 of books in ascending order.
-
-8. Compare the prices of books already in stock and in supply table.
+7. Compare the prices of books already in stock and in supply table.
 In case the price in the supply table is different from the price in stock
 recalculate the price in stock using the formula:
 
@@ -29,26 +22,20 @@ where p1 and a1 stand for price and amount in the stock (book table) and
       p2 and a2 stand for price and amount in the supply table.
 Increase the quantity of the books in stock by the number of books in the supply
 table.  Reset the number of these books in supply table.
-
-9.  Find identical books in the supply and book tables that have the same price,
+8.  Find identical books in the supply and book tables that have the same price,
 display their title and author and count the total number of copies of books
 in the supply and book tables.
 Name the columns Title, Author and Quantity.
-
-10. The list of cities is stored in the city table.
+9. The list of cities is stored in the city table.
 It is necessary to plan an exhibition of each author's books in each city during
 2020. Choose the date of the exhibition at random. Create a query that will
 display the city, author and date of the exhibition.
 The last column is Date.
 Sort the query  by city in alphabetical order, and Date in descending order.
-
-11. List in alphabetical order all authors who write in only one genre.
+10. List in alphabetical order all authors who write in only one genre.
 Especially for this task some rows in the table were changed.
-
-12. Select the book ( title, name author , name genre, price, amount) written
-in the most popular genres, sorted alphabetically by book title.
-
-*/
+11. Select the book ( title, name author , name genre, price, amount) written
+in the most popular genres, sorted alphabetically by book title. */
 
 
 /* Create and fill in the table author */
@@ -62,13 +49,11 @@ INSERT INTO author(
             author_id,
             name_author
           )
-
 VALUES (1, "Булгаков М.А."),
         (2, "Достоевский Ф.М."),
         (3, "Есенин С.А."),
         (4, "Пастернак Б.Л."),
         (5, "Лермонтов М.Ю.");
-
 
 /* Create and fill in the table genre. */
 
@@ -76,16 +61,13 @@ CREATE TABLE genre(
               genre_id INT PRIMARY KEY AUTO_INCREMENT,
               name_genre VARCHAR(30)
             );
-
 INSERT INTO genre(
             genre_id,
             name_genre
             )
-
 VALUES (1, "Роман"),
        (2, "Поэзия"),
        (3, "Приключения");
-
 
 /* Create and fill in the table book. */
 
@@ -99,7 +81,6 @@ CREATE TABLE book(
             FOREIGN KEY (author_id) REFERENCES author (author_id),
             FOREIGN KEY (genre_id) REFERENCES genre (genre_id)
           );
-
 INCERT INTO book(
             book_id,
             title,
@@ -107,7 +88,6 @@ INCERT INTO book(
             genre_id,
             price,
             amount)
-
 VALUES
       (1,	"Мастер и Маргарита",	1, 1, 670.99, 3),
       (2,	"Белая гвардия", 1, 1, 540.50, 5),
@@ -120,7 +100,8 @@ VALUES
 
 /* Display titles of books and their authors. */
 
-SELECT title, name_author
+SELECT title,
+       name_author
 FROM
   author INNER JOIN book
 ON author.author_id = book.author_id;
@@ -134,32 +115,29 @@ SELECT
   price
 FROM
   book
-INNER JOIN
-  genre
-ON book.genre_id = genre.genre_id
-AND book.amount > 8
-ORDER BY 3 DESC;
+INNER JOIN genre
+      ON book.genre_id = genre.genre_id
+WHERE
+  book.amount > 8
+ORDER BY
+  3 DESC;
 
 /* Select the title of all books. If the books of the specific author are
 currently not in stock - specify Null instead of the book title. */
 
-SELECT name_author, title
-FROM
-  author
-LEFT JOIN
-  book
-ON author.author_id = book.author_id
-ORDER BY name_author;
+SELECT name_author,
+       title
+FROM author
+     LEFT JOIN book ON author.author_id = book.author_id
+ORDER BY
+  name_author;
 
 /* Find all genres of books that are not represented in stock. */
 
 SELECT
   name_genre
-FROM
-  genre
-LEFT JOIN
-  book
-ON genre.genre_id = book.genre_id
+FROM genre
+      LEFT JOIN book ON genre.genre_id = book.genre_id
 WHERE
   amount IS NULL;
 
@@ -169,16 +147,12 @@ SELECT
   name_genre,
   title,
   name_author
-
-FROM
-  genre INNER jOIN book
-  ON genre.genre_id = book.genre_id
-    INNER JOIN author
-      ON book.author_id = author.author_id
+FROM genre INNER jOIN book ON genre.genre_id = book.genre_id
+              INNER JOIN author ON book.author_id = author.author_id
 WHERE
   name_genre
-LIKE "%Роман%"
-
+LIKE
+  "%Роман%"
 ORDER BY
   title ASC;
 
@@ -188,15 +162,15 @@ of books in ascending order. */
 
 SELECT
   name_author,
-SUM(book.amount) AS Количество
+  SUM(book.amount) AS Количество
 FROM
   author
-LEFT JOIN book on author.author_id = book.author_id
+    LEFT JOIN book ON author.author_id = book.author_id
 GROUP BY
   name_author
 HAVING
   Количество < 10
-  or COUNT(title) = 0
+  OR COUNT(title) = 0
 ORDER BY
   2;
 
@@ -213,8 +187,8 @@ table.  Reset the number of these books in supply table. */
 
 UPDATE book
     INNER JOIN author ON author.author_id = book.author_id
-    INNER JOIN supply ON book.title = supply.title
-                        and supply.author = author.name_author
+      INNER JOIN supply ON book.title = supply.title
+        and supply.author = author.name_author
 SET
     book.price = (book.price * book.amount + supply.price * supply.amount) / (book.amount + supply.amount),
                   book.amount = book.amount + supply.amount, supply.amount = 0
@@ -236,7 +210,6 @@ FROM
     book
     INNER JOIN author USING(author_id)
     INNER JOIN supply ON book.title = supply.title
-
 WHERE
     supply.price = book.price;
 
@@ -284,17 +257,16 @@ SELECT
     price,
     amount
 FROM book INNER JOIN author ON book.author_id = author.author_id
-          INNER JOIN genre USING(genre_id)
+            INNER JOIN genre USING(genre_id)
 WHERE
     name_genre IN (SELECT name_genre
-FROM
-    (SELECT
-         name_genre,
-         SUM(amount)
-FROM
-    book INNER JOIN genre USING(genre_id)
-GROUP BY
-    genre_id
-LIMIT 2) alias)
+                   FROM
+                   (SELECT name_genre,
+                           SUM(amount)
+                    FROM
+                      book INNER JOIN genre USING(genre_id)
+                    GROUP BY
+                      genre_id
+                    LIMIT 2) alias)
 
 ORDER BY 1;
