@@ -1,17 +1,49 @@
-/* Online book store. Mini project.  */
+/* Online book store. Mini project.
+
+Description.
+
+The online store sells books. Each book has a title, written by one author,
+belongs to one genre, has a certain price. There are several copies of each
+book in stock in the store.
+
+The buyer registers on the website of the online store, fills in his name and
+surname, e-mail and city of residence. He can form one or several orders, write
+some wishes for each order. Each order includes one or more books, each book
+can be ordered in several copies.
+
+Then the order goes through a series of successive stages: paid, packed, handed
+over to a courier or transport company for transportation, and finally delivered
+to the buyer. The date of each operation is recorded. Standart average delivery
+time is known for each city.
+
+Then the order goes through a series of successive stages: paid, packed, handed
+over to a courier or transport company for transportation, and finally delivered
+to the buyer. The date of each operation is recorded. Standart average delivery
+time is known for each city.
+
+At the same time, the store keeps a record of books, when buying, their number
+decreases, when the goods arrive, it increases, when the quantity is exhausted,
+an order is placed, etc.
 
 
-/*     */
+1. Select all orders of Pavel Baranov (which books, at what price and in what
+quantity he ordered) sorted by order number and book names.
+2.
+*/
+
+
+
+/* Select all orders of Pavel Baranov (which books, at what price and in what
+quantity he ordered) sorted by order number and book names. */
 
 SELECT
     buy.buy_id,
     title, price,
     buy_book.amount
-
 FROM
     client JOIN buy on client.client_id = buy.client_id
-           JOIN buy_book on buy.buy_id = buy_book.buy_id
-           JOIN book on book.book_id = buy_book.book_id
+              JOIN buy_book on buy.buy_id = buy_book.buy_id
+                  JOIN book on book.book_id = buy_book.book_id
 WHERE
     name_client = "Баранов Павел"
 ORDER BY 1;
