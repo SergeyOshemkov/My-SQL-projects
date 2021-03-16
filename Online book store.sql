@@ -31,8 +31,20 @@ quantity he ordered) sorted by order number and book names.
 2. Calculate how many times each book was ordered. Find out the author for each
 book. Sort the result by the name of authors, and then by title of books.
 Name the last column Количество.
-3.
-
+3. Find the cities where live the  customers who placed orders in the online store.
+Calculate the number of orders for each city.
+Information should be structured in descending order by the number of orders,
+and then in alphabetical order by city name.
+4. Select the id numbers of all paid orders and the date when they were paid.
+5. Select information about each order: its number, who has created it (user
+surname) and its value (the sum of the products of the number of ordered books
+and their prices), sorted by the order number.
+6. Select information about each order: its number, who has created it (user
+surname) and its value (the sum of the products of the number of ordered books
+and their prices), sorted by the order number.
+7. Find out all orders and the names of the actual stages in ascending order by
+buy_id. Do not include in the query the delivered orders.
+The current stage is the stage for which the stage end date is not filled in.
 */
 
 
@@ -67,19 +79,20 @@ GROUP BY
     title
 ORDER BY 1;
 
-/*   */
+/* Find the cities where live the  customers who placed orders in the online store.
+Calculate the number of orders for each city.
+Information should be structured in descending order by the number of orders,
+and then in alphabetical order by city name.  */
 
 SELECT name_city,
        COUNT(buy.client_id) AS Количество
-
 FROM city
          INNER JOIN client ON city.city_id = client.city_id
-         INNER JOIN buy USING(client_id)
-
+            INNER JOIN buy USING(client_id)
 GROUP BY
          name_city;
 
-/* */
+/* Select the id numbers of all paid orders and the date when they were paid. */
 
 SELECT
        buy_id,
@@ -91,26 +104,25 @@ WHERE
 AND
        buy_step.date_step_end IS NOT NULL;
 
-
-/*   */
-
+/* Select information about each order: its number, who has created it (user
+surname) and its value (the sum of the products of the number of ordered books
+and their prices), sorted by the order number.  */
 
 SELECT  buy_id,
         name_client,
         SUM(buy_book.amount * book.price) AS  Стоимость
-
 FROM book
-
      INNER JOIN buy_book USING(book_id)
      INNER JOIN buy USING(buy_id)
      INNER JOIN client USING(client_id)
-
-GROUP BY buy_id, name_client
-
+GROUP BY
+  buy_id,
+  name_client
 ORDER BY 1;
 
-
-/*   */
+/* Find out all orders and the names of the actual stages in ascending order by
+buy_id. Do not include in the query the delivered orders.
+The current stage is the stage for which the stage end date is not filled in. */
 
 
 SELECT
