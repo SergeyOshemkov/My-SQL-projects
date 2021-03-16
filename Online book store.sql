@@ -28,9 +28,12 @@ an order is placed, etc.
 
 1. Select all orders of Pavel Baranov (which books, at what price and in what
 quantity he ordered) sorted by order number and book names.
-2.
-*/
+2. Calculate how many times each book was ordered. Find out the author for each
+book. Sort the result by the name of authors, and then by title of books.
+Name the last column Количество.
+3.
 
+*/
 
 
 /* Select all orders of Pavel Baranov (which books, at what price and in what
@@ -48,18 +51,17 @@ WHERE
     name_client = "Баранов Павел"
 ORDER BY 1;
 
-/*   */
+/* Calculate how many times each book was ordered. Find out the author for each
+book. Sort the result by the name of authors, and then by title of books.
+Name the last column Количество.  */
 
 SELECT
     name_author,
     title,
     COUNT(buy_book.amount) AS Количество
-
-FROM
-
-    author JOIN book USING(author_id)
-    LEFT JOIN buy_book USING(book_id)
-
+FROM author
+        JOIN book USING(author_id)
+          LEFT JOIN buy_book USING(book_id)
 GROUP BY
     name_author,
     title
