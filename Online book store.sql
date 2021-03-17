@@ -61,7 +61,15 @@ popov@test, he lives in Moscow.
 "Contact me for shipping."
 13. Add order number 5 to the buy_book table. This order must contain 2 copies
 of Pasternak's book "Lyrics" and 1 copy of Bulgakov's book "White Guard".
-*/
+14.  Reduce the amount of books in the stock by books included in the order #5.
+15.  Create an invoice (table buy_pay) for payment of order number 5, which
+includes the title of books, their author, price, number of ordered books and
+cost. Fill in  information in the table sorted by book titles.
+16. Create a general invoice (table buy_pay) to pay for order number 5. Include
+the order number, the number of books  and the total cost. Use ONE query to solve.
+17. Include all the stages from the table step which must go through the order #5.
+Fill in with Null the date_step_beg and date_step_end columns of all records.
+18. Insert the invoice date 04/12/2020 in the buy_step table for the order #5. */
 
 
 /* Select all orders of Pavel Baranov (which books, at what price and in what
@@ -278,3 +286,73 @@ FROM buy_book
           INNER JOIN author USING(author_id)
 WHERE
     title = "Белая гвардия";
+
+
+/* Reduce the amount of books in the stock by books included in the order #5.*/
+
+UPDATE book
+       INNER JOIN buy_book USING(book_id)
+SET
+    book.amount = book.amount - buy_book.amount
+WHERE
+    buy_id = 5;
+
+/* Create an invoice (table buy_pay) for payment of order number 5, which
+includes the title of books, their author, price, number of ordered books and
+cost. Fill in  information in the table sorted by book titles.  */
+
+CREATE TABLE
+    buy_pay AS
+SELECT
+    title,
+    name_author,
+    price,
+    buy_book.amount,
+    price * buy_book.amount AS Стоимость
+FROM book
+    INNER JOIN author ON book.author_id = author.author_id
+      INNER JOIN buy_book ON buy_book.book_id = book.book_id
+WHERE
+    buy_id = 5
+ORDER BY 1;
+
+/* Create a general invoice (table buy_pay) to pay for order number 5. Include
+the order number, the number of books  and the total cost. Use ONE query to solve. */
+
+CREATE TABLE
+    buy_pay AS
+SELECT
+    buy_id,
+    SUM(buy_book.amount) AS Количество,
+    SUM(book.price * buy_book.amount) AS Итого
+FROM book
+    INNER JOIN buy_book USING(book_id)
+GROUP BY
+    buy_id
+HAVING
+    buy_id = 5;
+
+/* Include all the stages from the table step which must go through the order #5.
+Fill in with Null the date_step_beg and date_step_end columns of all records. */
+
+INSERT INTO
+    buy_step(buy_id,
+             step_id)
+SELECT
+    buy_id,
+    step_id
+FROM buy
+    CROSS JOIN step
+WHERE
+    buy_id = 5;
+
+/* Insert the invoice date 04/12/2020 in the buy_step table for the order #5. */
+
+UPDATE
+    buy_step
+SET
+    date_step_beg = "2020-04-12"
+WHERE
+    buy_id = 5
+    AND
+    step_id = 1;

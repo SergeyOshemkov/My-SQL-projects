@@ -1,5 +1,7 @@
 /* Mini project. Business trips of employees.
 
+Description.
+
 The trip table, provides information on business trips of employees of a certain
 organization (the name of the employee, the city where he went, the amount of
 daily allowances, the dates of the first and last days of the trip).
@@ -65,7 +67,10 @@ INSERT INTO trip VALUES
 ("19", "Абрамова К.А.", "Владивосток", "450", "2020-07-02", "2020-07-13"),
 ("20", "Баранов П.Е.", "Воронеж", "450", "2020-07-19", "2020-07-25");
 
-/* Display information about business trips of those employees whose last
+
+Solutions.
+
+/* Display information about business trips of the employees whose last
 name ends with the letter "a". */
 
 SELECT name,
