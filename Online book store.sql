@@ -45,6 +45,13 @@ and their prices), sorted by the order number.
 7. Find out all orders and the names of the actual stages in ascending order by
 buy_id. Do not include in the query the delivered orders.
 The current stage is the stage for which the stage end date is not filled in.
+8. The city table contains the number of delivery days to each city (the
+"Transportation" stage).
+For the orders that have passed the transportation stage, calculate the actual
+delivry time in days.
+In case the order is delivered with a delay, indicate the number of days of
+delay, otherwise indicate 0. Sort the information by the order number.
+9.
 */
 
 
@@ -113,8 +120,8 @@ SELECT  buy_id,
         SUM(buy_book.amount * book.price) AS  Стоимость
 FROM book
      INNER JOIN buy_book USING(book_id)
-     INNER JOIN buy USING(buy_id)
-     INNER JOIN client USING(client_id)
+        INNER JOIN buy USING(buy_id)
+            INNER JOIN client USING(client_id)
 GROUP BY
   buy_id,
   name_client
@@ -123,7 +130,6 @@ ORDER BY 1;
 /* Find out all orders and the names of the actual stages in ascending order by
 buy_id. Do not include in the query the delivered orders.
 The current stage is the stage for which the stage end date is not filled in. */
-
 
 SELECT
   buy_id,
@@ -136,6 +142,29 @@ WHERE
   date_step_end IS NULL
 ORDER BY
   buy_id;
+
+/* The city table contains the number of delivery days to each city (the
+"Transportation" stage).
+For the orders that have passed the transportation stage, calculate the actual
+delivry time in days.
+In case the order is delivered with a delay, indicate the number of days of
+delay, otherwise indicate 0. Sort the information by the order number.   */
+
+SELECT buy_id,
+       DATEDIFF(date_step_end, date_step_beg) AS Количество_дней,
+       (IF(DATEDIFF(date_step_end, date_step_beg) > days_delivery,
+       DATEDIFF(date_step_end, date_step_beg) - days_delivery, 0)) AS Опоздание
+FROM city
+        INNER JOIN client USING(city_id)
+            INNER JOIN buy USING(client_id)
+                INNER JOIN buy_step USING(buy_id)
+                    INNER JOIN step USING(step_id)
+WHERE
+    name_step = "Транспортировка"
+    AND date_step_end IS NOT Null
+ORDER BY 1;
+
+
 
 
   /*    */
