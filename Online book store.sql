@@ -51,8 +51,10 @@ For the orders that have passed the transportation stage, calculate the actual
 delivry time in days.
 In case the order is delivered with a delay, indicate the number of days of
 delay, otherwise indicate 0. Sort the information by the order number.
-9.
-*/
+9. Find out the most popular genre (or genres) by the number of the books sold.
+10. Compare the monthly book sales for the current year and the previous one.
+Select year, month, and amount of revenue sorted in ascending order of months,
+then in ascending order of years. Name the columns: Year, Month, and  Amount. */
 
 
 /* Select all orders of Pavel Baranov (which books, at what price and in what
@@ -164,121 +166,52 @@ WHERE
     AND date_step_end IS NOT Null
 ORDER BY 1;
 
+/* Find out the most popular genre (or genres) by the number of the books sold. */
 
-
-
-  /*    */
-
-  SELECT
-      name_client
-  FROM author
-      INNER JOIN book USING(author_id)
+SELECT
+    name_genre,
+    SUM(buy_book.amount) as Количество
+FROM genre
+    INNER JOIN book USING(genre_id)
       INNER JOIN buy_book USING(book_id)
-      INNER JOIN buy USING(buy_id)
-      INNER JOIN client USING(client_id)
-  WHERE name_author = "Достоевский Ф.М.";
-
-
-  /*   */
-
-  SELECT name_genre, SUM(buy_book.amount) as Количество
-FROM genre INNER JOIN book
-     on genre.genre_id = book.genre_id
-     INNER JOIN buy_book
-     ON book.book_id = buy_book.book_id
-GROUP BY name_genre
+GROUP BY
+    name_genre
 HAVING SUM(buy_book.amount) =
      (SELECT MAX(sum_amount) AS max_sum_amount
-      FROM (SELECT genre.genre_id, SUM(buy_book.amount) AS sum_amount
-            FROM buy_book INNER JOIN book
-            ON buy_book.book_id=book.book_id
-                          INNER JOIN genre
-                          ON book.genre_id = genre.genre_id
-            GROUP  BY genre.genre_id) query_in;
+      FROM
+          (SELECT name_genre,
+           SUM(buy_book.amount) AS sum_amount
+      FROM genre
+           INNER JOIN book USING (genre_id)
+           INNER JOIN buy_book USING(book_id)
+      GROUP BY name_genre)
+      query_in);
 
+/* Compare the monthly book sales for the current year and the previous one.
+Select year, month, and amount of revenue sorted in ascending order of months,
+then in ascending order of years. Name the columns: Year, Month, and  Amount. */
 
-
-/* 1 задача из 2.5 все предыдущие из 2.4 */
-
-INSERT INTO
-    client(name_client, city_id, email)
-SELECT
-    'Попов Илья',
-     city_id,
-    'popov@test'
-FROM city
-WHERE
-    city_id = 1;
-
-
-
-/* 2 задача из 2.5 все предыдущие из 2.4 */
-
-INSERT INTO
-    buy(buy_description, client_id)
-SELECT
-    "Связаться со мной по вопросу доставки", client_id
+SELECT YEAR(date_step_end) AS Год,
+            MONTHNAME(date_step_end) AS Месяц,
+            SUM(price * buy_book.amount) AS Сумма
 FROM
-    client
+    book
+    INNER JOIN buy_book USING(book_id)
+        INNER JOIN buy USING(buy_id)
+            INNER JOIN buy_step USING(buy_id)
+                INNER JOIN step USING(step_id)
 WHERE
-    name_client = "Попов Илья";
-
-
-/* 2.5 3  */
-
-
-INSERT INTO buy_book(buy_id,
-                     book_id,
-                     buy_book.amount)
-SELECT 5,
-       book_id,
-       2
-FROM buy_book
-        INNER JOIN book USING(book_id)
-        INNER JOIN author USING(author_id)
-WHERE
-    title = "Лирика";
-
-INSERT INTO buy_book(buy_id,
-                     book_id,
-                     buy_book.amount)
-SELECT 5,
-       book_id,
-       1
-FROM buy_book
-        INNER JOIN book USING(book_id)
-        INNER JOIN author USING(author_id)
-WHERE
-    title = "Белая гвардия";
-
-/* 7 задача из 2.5 все предыдущие из 2.4 */
-
-UPDATE book
-       INNER JOIN buy_book USING(book_id)
-SET
-    book.amount = book.amount - buy_book.amount
-WHERE
-    buy_id = 5;
-
-/* 5 задача из 2.5 все предыдущие из 2.4 */
-
-INSERT INTO
-    buy_step(buy_id, step_id)
-SELECT
-    buy_id, step_id
-FROM buy
-    CROSS JOIN step
-WHERE
-    buy_id = 5;
-
-/* 8 задача из 2.5 все предыдущие из 2.4 */
-
-
-UPDATE
-    buy_step
-SET
-    date_step_beg = "2020-04-12"
-WHERE
-    buy_id = 5
-    AND
-    step_id = 1;
+    date_step_end IS NOT Null AND name_step = "Оплата"
+GROUP BY
+    Год,
+    Месяц
+UNION
+SELECT YEAR(buy_archive.date_payment) AS Год,
+            MONTHNAME(buy_archive.date_payment) AS Месяц,
+            SUM(buy_archive.price * buy_archive.amount) AS Сумма
+FROM
+    buy_archive
+GROUP BY
+    Год, Месяц
+ORDER BY
+    2, 1;
