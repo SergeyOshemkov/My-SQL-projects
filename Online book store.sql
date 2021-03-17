@@ -54,7 +54,14 @@ delay, otherwise indicate 0. Sort the information by the order number.
 9. Find out the most popular genre (or genres) by the number of the books sold.
 10. Compare the monthly book sales for the current year and the previous one.
 Select year, month, and amount of revenue sorted in ascending order of months,
-then in ascending order of years. Name the columns: Year, Month, and  Amount. */
+then in ascending order of years. Name the columns: Year, Month, and  Amount.
+11. Insert a new person Ilya Popov in the customer table. His email is
+popov@test, he lives in Moscow.
+12. Create a new order for Ilya Popov. His comment for the order:
+"Contact me for shipping."
+13. Add order number 5 to the buy_book table. This order must contain 2 copies
+of Pasternak's book "Lyrics" and 1 copy of Bulgakov's book "White Guard".
+*/
 
 
 /* Select all orders of Pavel Baranov (which books, at what price and in what
@@ -215,3 +222,59 @@ GROUP BY
     Год, Месяц
 ORDER BY
     2, 1;
+
+/* Insert a new person Ilya Popov in the customer table. His email is
+popov@test, he lives in Moscow. */
+
+INSERT INTO
+    client(name_client,
+           city_id,
+           email)
+SELECT
+    'Попов Илья',
+     city_id,
+    'popov@test'
+FROM city
+WHERE
+    city_id = 1;
+
+
+/* Create a new order for Ilya Popov. His comment for the order:
+"Contact me for shipping." */
+
+INSERT INTO
+    buy(buy_description,
+        client_id)
+SELECT
+    "Связаться со мной по вопросу доставки", client_id
+FROM
+    client
+WHERE
+    name_client = "Попов Илья";
+
+/* Add order number 5 to the buy_book table. This order must contain 2 copies
+of Pasternak's book "Lyrics" and 1 copy of Bulgakov's book "White Guard".   */
+
+INSERT INTO buy_book(buy_id,
+                     book_id,
+                     buy_book.amount)
+SELECT 5,
+       book_id,
+       2
+FROM buy_book
+        INNER JOIN book USING(book_id)
+        INNER JOIN author USING(author_id)
+WHERE
+    title = "Лирика";
+INSERT INTO
+    buy_book(buy_id,
+             book_id,
+             buy_book.amount)
+SELECT 5,
+       book_id,
+       1
+FROM buy_book
+        INNER JOIN book USING(book_id)
+          INNER JOIN author USING(author_id)
+WHERE
+    title = "Белая гвардия";
