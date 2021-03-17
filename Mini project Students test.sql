@@ -17,7 +17,7 @@ When the testing comes to an end, the result (in percent) of the attempt is
 calculated and saved.
 
 
-Tasks to solve.
+Tasks to unswer.
 
 1. Select students who passed the discipline "Basics of databases", indicate the
  date of the attempt and the result. Display information in descending order of
@@ -41,11 +41,25 @@ indicate the number of students 0.
 6. Randomly select 3 questions on the discipline Fundamentals of databases.
 7. Select the questions that were included in the test for Ivan Semyonov in the
 "Basics of SQL" discipline 2020-05-17 (the attempt_id value for this attempt is
- 7). Indicate which answer the student gave and whether he was correct or not. */
+ 7). Indicate which answer the student gave and whether he was correct or not.
+8. Calculate the test results. The result of an attempt is calculated as the
+number of correct answers divided by 3 (the number of questions in each attempt)
+and multiplied by 100. Round the result to two decimal places. Select the
+student's surname, subject name, date and result. Sort the information by the
+last name and then by the date of attempt in descending order.
+9. Calculate the percentage of successful solutions for each question.
+Round the value to 2 decimal places.
+Include in the query the name of the subject to which the question relates and
+the total number of responses to this question. Sort the information by the name
+of the discipline, then in descending order of success, and then by the text of
+the question in alphabetical order.
+Cut the questions to 30 characters and add an ellipsis "...".
 
+
+Solutions. */
 
 /* Select students who passed the discipline "Basics of databases", indicate the
- date of the attempt and the result. Display information in descending order of
+ date of attempt and result. Select information in descending order of
  test results. */
 
 SELECT name_subject,
@@ -69,7 +83,6 @@ FROM attempt
 GROUP BY
     name_subject;
 
-
 /* Select the student (or various students) who has the highest attempts
 results. Sort information alphabetically by student surname.  */
 
@@ -89,7 +102,6 @@ ORDER BY 1;
 select the difference in days between the first and last attempts. Select
 information in ascending order of difference. Students who have made one attempt
  at a discipline are not counted. */
-
 
 SELECT
     name_student,
@@ -146,3 +158,52 @@ FROM answer
      INNER JOIN question ON testing.question_id = question.question_id
 WHERE
     attempt_id = 7;
+
+/* Calculate the test results. The result of an attempt is calculated as the
+number of correct answers divided by 3 (the number of questions in each attempt)
+and multiplied by 100. Round the result to two decimal places. Select the
+student's surname, subject name, date and result. Sort the information by the
+last name and then by the date of attempt in descending order. */
+
+SELECT name_student,
+       name_subject,
+       date_attempt,
+       ROUND((SUM(is_correct)/3) * 100,2) AS Результат
+FROM subject
+    INNER JOIN attempt USING(subject_id)
+        INNER JOIN testing USING(attempt_id)
+            INNER JOIN student USING(student_id)
+                INNER JOIN answer USING(answer_id)
+GROUP BY name_student,
+         name_subject,
+         date_attempt
+ORDER BY
+    1 ASC, 3 DESC;
+
+/* Calculate the percentage of successful solutions for each question.
+Round the value to 2 decimal places.
+Include in the query the name of the subject to which the question relates and
+the total number of responses to this question. Sort the information by the name
+of the discipline, then in descending order of success, and then by the text of
+the question in alphabetical order.
+Cut the questions to 30 characters and add an ellipsis "...". */
+
+SELECT name_subject,
+       CONCAT(LEFT(name_question, 30), "...") AS Вопрос,
+       COUNT(answer_id) AS Всего_ответов,
+       ROUND(SUM(is_correct) * 100/ COUNT(answer_id), 2) AS Успешность
+FROM subject
+    INNER JOIN question USING(subject_id)
+        RIGHT JOIN answer USING(question_id)
+            INNER JOIN testing USING(answer_id)
+GROUP BY
+    name_subject,
+    Вопрос
+ORDER BY
+    1 ASC,
+    4 DESC,
+    2 ASC;  */
+
+/*   */
+
+/*   */
