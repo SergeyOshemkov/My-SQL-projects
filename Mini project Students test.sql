@@ -54,7 +54,23 @@ the total number of responses to this question. Sort the information by the name
 of the discipline, then in descending order of success, and then by the text of
 the question in alphabetical order.
 Cut the questions to 30 characters and add an ellipsis "...".
-
+10. Include in the table attempt a new attempt for the student Pavel Baranov in
+the discipline "Fundamentals of databases". Set the current date as the date of
+the attempt.
+11. Randomly select three questions on discipline, which is going to be tested
+by the last student entered in the attempt table, and add them to the testing
+table. The id of the last attempt to get as the maximum id value from the
+attempt table.
+12. The student has passed the test (all his answers are filled in the testing
+table). Now it's high time to calculate the result and insert it into the
+attempt table for use.
+Calculate the result as the number of correct answers divided by 3 (the number
+of questions in each attempt) and multiplied by 100. Round the result to the
+nearest integer.
+We will assume that we know the id of the attempt for which the result is
+calculated, in our case it is 8.
+13. Remove all attempts made before May 1, 2020 from the attempt table. Remove 
+all questions matching these attempts from the testing table as well.
 
 Solutions. */
 
@@ -204,6 +220,74 @@ ORDER BY
     4 DESC,
     2 ASC;  */
 
-/*   */
 
-/*   */
+/* Include in the table attempt a new attempt for the student Pavel Baranov in
+the discipline "Fundamentals of databases". Set the current date as the date of
+the attempt. */
+
+INSERT INTO attempt(
+                    student_id,
+                    subject_id,
+                    date_attempt
+                    )
+SELECT
+    student.student_id,
+    subject.subject_id, NOW()
+FROM student
+    INNER JOIN attempt USING(student_id)
+    	INNER jOIN subject USING(subject_id)
+WHERE
+    name_subject = "Основы баз данных"
+    AND
+    name_student = "Баранов Павел";
+
+/* Randomly select three questions on discipline, which is going to be tested
+by the last student entered in the attempt table, and add them to the testing
+table. The id of the last attempt to get as the maximum id value from the
+attempt table. */
+
+INSERT INTO
+    testing(attempt_id,
+    question_id)
+SELECT
+    attempt_id,
+    question_id
+FROM
+    question
+    	INNER JOIN attempt USING(subject_id)
+WHERE
+    attempt_id = (SELECT MAX(attempt_id)
+                  FROM attempt)
+ORDER BY
+    RAND()
+LIMIT
+    3;
+
+/* The student has passed the test (all his answers are filled in the testing
+table). Now it's high time to calculate the result and insert it into the
+attempt table for use.
+Calculate the result as the number of correct answers divided by 3 (the number
+of questions in each attempt) and multiplied by 100. Round the result to the
+nearest integer.
+We will assume that we know the id of the attempt for which the result is
+calculated, in our case it is 8. */
+
+UPDATE
+    attempt
+SET
+    attempt.result = (SELECT
+                          ROUND((SUM(is_correct)/3) * 100,2)
+                      FROM testing
+                          INNER JOIN answer USING(answer_id)
+                      WHERE
+                          attempt_id = 8)
+WHERE
+    attempt_id = 8;
+
+/* Remove all attempts made before May 1, 2020 from the attempt table. Remove
+all questions matching these attempts from the testing table as well. */
+
+DELETE FROM
+    attempt
+WHERE
+    date_attempt < "2020-05-17";
