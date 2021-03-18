@@ -1,6 +1,5 @@
 /* Description of the project:
 
-
 The university consists of a set of faculties (schools). Applicants are admitted
  to educational programs based on the results of the Unified State Examination
  (USE).
@@ -75,7 +74,14 @@ Information should be sorted by programs, and then by the names of applicants.
 educational program, the id of the enrollee, the sum of the applicant's points
 sorted by the id of the educational program, and then in descending order of
 the sum of points.
-13.
+13. Remove entries from the applicant table created in the previous step if the
+applicant for the selected educational program did not get a minimum score in
+at least one subject.
+14. Create a new applicant_order table based on the applicant table. When
+creating a table, the data must be sorted by the id of the educational
+program, then in descending order of the final score.
+Drop the applicant table.
+
 
 
 Solutions.
@@ -264,19 +270,62 @@ ORDER BY
     1 ASC,
     3 DESC;
 
-/*   */
+/* Remove entries from the applicant table created in the previous step if the
+applicant for the selected educational program did not get a minimum score in
+at least one subject. */
 
+DELETE FROM
+    applicant
+WHERE (program_id, enrollee_id) IN(
+    SELECT DISTINCT program_id,
+    enrollee.enrollee_id
+FROM enrollee JOIN program_enrollee USING(enrollee_id)
+                  JOIN program USING(program_id)
+                      JOIN program_subject USING(program_id)
+                          JOIN subject USING(subject_id)
+                              JOIN enrollee_subject ON subject.subject_id = enrollee_subject.subject_id                                           AND enrollee_subject.enrollee_id = enrollee.enrollee_id
+WHERE
+    result < min_result
+ORDER BY
+    1, 2);
 
-    /*   */
-    /*   */
+/* Increase the final scores of applicants in the applicant table by the value
+of additional points. */
 
+UPDATE applicant
+    INNER JOIN (SELECT
+                    enrollee_id,
+                    SUM(IF(bonus IS NULL, 0, bonus)) AS Бонус
+                FROM achievement
+                    INNER JOIN enrollee_achievement USING(achievement_id)
+                        RIGHT JOIN enrollee USING(enrollee_id)
+                GROUP BY
+                    enrollee_id
+                ORDER BY 1) query USING(enrollee_id)
+SET
+itog = itog + Бонус;
 
-    /*   */
-    /*   */
+/* Create a new applicant_order table based on the applicant table. When
+creating a table, the data must be sorted by the id of the educational
+program, then in descending order of the final score.
+Drop the applicant table. */
 
+CREATE TABLE
+    applicant_order AS
+SELECT
+    *
+FROM
+    applicant
+ORDER BY
+    1 ASC,
+    3 DESC;
+DROP TABLE
+    applicant;
 
-    /*   */
-    /*   */
+/* Include a new integer column str_id in the applicant_order table, place it
+before the first.  */
 
-
-    /*   */
+ALTER TABLE
+  applicant_order
+ADD
+  str_id INT FIRST;
