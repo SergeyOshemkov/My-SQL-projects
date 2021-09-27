@@ -1,5 +1,4 @@
-/*
-The description of the project.
+/* The description of the project.
 
 The university implements online testing in several disciplines. Each discipline
 includes a number of questions. The answers to the question present in the form
@@ -69,7 +68,7 @@ of questions in each attempt) and multiplied by 100. Round the result to the
 nearest integer.
 We will assume that we know the id of the attempt for which the result is
 calculated, in our case it is 8.
-13. Remove all attempts made before May 1, 2020 from the attempt table. Remove 
+13. Remove all attempts made before May 1, 2020 from the attempt table. Remove
 all questions matching these attempts from the testing table as well.
 
 Solutions. */
