@@ -1,0 +1,81 @@
+1. Написать 2 SQL запроса для поиска значений среднего и медианы по сумме продажи. Сумму транзакции округляем до целой части. Нельзя использовать стандартные функции 
+среднего и медианы в SQL. Можно использовать только функции SUM и COUNT.
+
+1.1.	Запрос для поиска среднего значения (если я правильно понял условие задачи - то округлять нужно именно сумму, а не среднее значение):
+
+SELECT 
+    ROUND(SUM(sale_amount)) / COUNT(sale_amount) AS AVG_price
+FROM
+    orders;
+
+1.2. Запрос для поиска медианы:
+
+/* Алгоритм решения заключается в том, чтобы отсортировать по возрастанию значения в колонке sale_amount, 
+пронумеровать по возрастанию каждую строчку упорядоченного списка и затем выбрать медианное значение с учетом того что в колонке sale_amount может быть четное 
+количество элементов: */
+
+WITH 
+    sorted AS 
+(
+SELECT 
+    *, COUNT(*) OVER () AS counter,
+    ROW_NUMBER() OVER (ORDER BY sale_amount) AS row_num
+FROM 
+    purchases
+)
+SELECT 
+    id,
+    sales_amount,
+    user_id,
+    datetime
+FROM 
+    sorted
+WHERE 
+    row_num IN ((counter+1)/2, (counter+2)/2);
+
+	
+2. Написать запрос для поиска задублированных в результате ошибки транзакций в таблице purchases:
+
+SELECT 
+    transaction_id,
+    datetime,
+    amount, 
+    user_id,
+    COUNT(*)
+
+FROM
+    purchases
+GROUP BY 
+    transaction_id,
+    datetime,
+    amount, 
+    user_id
+HAVING count(*) > 1;
+
+
+/*3. Написать SQL-запрос для построения воронки перехода из установки в оформление пробного периода и в покупку платной версии приложения
+     в разрезе стран. На одного юзера возможно только одно оформление пробного периода и одна покупка платной версии. Покупка возможна только 
+     после истечения срока пробного периода. На выходе должна получиться таблица с колонками 'country', 'installs', 'trials', 'purchases', 
+     'conversion_rate_to_trial', 'conversion_rate_to_purchase'.
+
+
+     Решение: Не знаю, намеренно ли сделана опечатка в слове instal c одной буквой l в event_type, но пишу как в оригинальном задании. */   
+
+SELECT 
+    country,
+    installs,
+    trials,
+    purchases,
+    100 * trials / installs AS conversion_rate_to_trials,
+    100 * purchases / trials AS conversion_rate_to_purchases
+
+FROM
+    (SELECT
+        country,
+        COUNT(SELECT transaction_id FROM events WHERE event_type = “install”) AS installs,
+        COUNT(SELECT transaction_id FROM events WHERE event_type = “trials”) AS trials,
+        COUNT(SELECT transaction_id FROM events WHERE event_type = “purchases”) AS purchases
+     ) calculations
+
+GROUP BY
+    country;
